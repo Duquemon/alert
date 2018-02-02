@@ -1,0 +1,107 @@
+package cl.button.panic.model;
+
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+
+@Entity
+public class Beneficiary {
+	@Id
+	@GeneratedValue(strategy=GenerationType.IDENTITY)
+	private long idApplicationUser;
+	private String nameContactFirst;
+	private String nameContactTwo;
+	private String nameContactThree;
+	private String lastNameContactFirst;
+	private String lastNameContactTwo;
+	private String lastNameContactThree;
+	private String emailContactFirst;
+	private String emailContactTwo;
+	private String emailContactThree;
+	private String numberCellphoneContactFirst;
+	private String numberCellphoneContactTwo;
+	private String numberCellphoneContactThree;
+	
+	public long getIdApplicationUser() {
+		return idApplicationUser;
+	}
+	public void setIdApplicationUser(long idApplicationUser) {
+		this.idApplicationUser = idApplicationUser;
+	}
+	public String getNameContactFirst() {
+		return nameContactFirst;
+	}
+	public void setNameContactFirst(String nameContactFirst) {
+		this.nameContactFirst = nameContactFirst;
+	}
+	public String getNameContactTwo() {
+		return nameContactTwo;
+	}
+	public void setNameContactTwo(String nameContactTwo) {
+		this.nameContactTwo = nameContactTwo;
+	}
+	public String getNameContactThree() {
+		return nameContactThree;
+	}
+	public void setNameContactThree(String nameContactThree) {
+		this.nameContactThree = nameContactThree;
+	}
+	public String getLastNameContactFirst() {
+		return lastNameContactFirst;
+	}
+	public void setLastNameContactFirst(String lastNameContactFirst) {
+		this.lastNameContactFirst = lastNameContactFirst;
+	}
+	public String getLastNameContactTwo() {
+		return lastNameContactTwo;
+	}
+	public void setLastNameContactTwo(String lastNameContactTwo) {
+		this.lastNameContactTwo = lastNameContactTwo;
+	}
+	public String getLastNameContactThree() {
+		return lastNameContactThree;
+	}
+	public void setLastNameContactThree(String lastNameContactThree) {
+		this.lastNameContactThree = lastNameContactThree;
+	}
+	public String getEmailContactFirst() {
+		return emailContactFirst;
+	}
+	public void setEmailContactFirst(String emailContactFirst) {
+		this.emailContactFirst = emailContactFirst;
+	}
+	public String getEmailContactTwo() {
+		return emailContactTwo;
+	}
+	public void setEmailContactTwo(String emailContactTwo) {
+		this.emailContactTwo = emailContactTwo;
+	}
+	public String getEmailContactThree() {
+		return emailContactThree;
+	}
+	public void setEmailContactThree(String emailContactThree) {
+		this.emailContactThree = emailContactThree;
+	}
+	public String getNumberCellphoneContactFirst() {
+		return numberCellphoneContactFirst;
+	}
+	public void setNumberCellphoneContactFirst(String numberCellphoneContactFirst) {
+		this.numberCellphoneContactFirst = numberCellphoneContactFirst;
+	}
+	public String getNumberCellphoneContactTwo() {
+		return numberCellphoneContactTwo;
+	}
+	public void setNumberCellphoneContactTwo(String numberCellphoneContactTwo) {
+		this.numberCellphoneContactTwo = numberCellphoneContactTwo;
+	}
+	public String getNumberCellphoneContactThree() {
+		return numberCellphoneContactThree;
+	}
+	public void setNumberCellphoneContactThree(String numberCellphoneContactThree) {
+		this.numberCellphoneContactThree = numberCellphoneContactThree;
+	}
+	
+	
+
+}

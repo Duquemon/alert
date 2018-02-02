@@ -1,0 +1,18 @@
+package cl.button.panic.controller;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+
+import freemarker.template.Configuration;
+import freemarker.template.Template;
+
+
+@Controller
+public class SendAlertController {
+
+	@Autowired
+	private JavaMailSender sender;
+	@Autowired
+	private Configuration freemarkerConfig;
+
+}
