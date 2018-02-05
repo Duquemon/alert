@@ -1,31 +1,26 @@
 package button.panic.cl.panicbutton;
 
+import android.content.Context;
 import android.content.Intent;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.android.volley.AuthFailureError;
-import com.android.volley.NetworkResponse;
-import com.android.volley.Request;
-import com.android.volley.RequestQueue;
-import com.android.volley.Response;
-import com.android.volley.VolleyError;
-import com.android.volley.toolbox.JsonObjectRequest;
-import com.android.volley.toolbox.JsonRequest;
-import com.android.volley.toolbox.StringRequest;
-import com.android.volley.toolbox.Volley;
+import com.victor.loading.newton.NewtonCradleLoading;
 
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import java.util.HashMap;
-import java.util.Map;
+import button.panic.cl.panicbutton.model.MyApiEndpointInterface;
+import button.panic.cl.panicbutton.model.User;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
 
 /**
  * Created by jorgefigueroa on 01-02-18.
@@ -35,102 +30,91 @@ public class Register extends AppCompatActivity {
     EditText username, name, lastName, email, password;
     Button registerButton;
     TextView loginLink;
-    String URL = "http://192.168.1.41:8080/login/sign-up";
+    private MyApiEndpointInterface myApi;
+    private Retrofit mRestAdapter;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_register);
+        username = (EditText) findViewById(R.id.username);
+        name = (EditText) findViewById(R.id.name);
+        lastName = (EditText) findViewById(R.id.lastName);
+        email = (EditText) findViewById(R.id.email);
+        password = (EditText) findViewById(R.id.password);
 
-        username = (EditText)findViewById(R.id.username);
-        name = (EditText)findViewById(R.id.name);
-        lastName = (EditText)findViewById(R.id.lastName);
-        email = (EditText)findViewById(R.id.email);
-        password = (EditText)findViewById(R.id.password);
+        // Crear conexión al servicio REST
+        mRestAdapter = new Retrofit.Builder()
+                .baseUrl(MyApiEndpointInterface.BASE_URL)
+                .addConverterFactory(GsonConverterFactory.create())
+                .build();
+
+        myApi = mRestAdapter.create(MyApiEndpointInterface.class);
 
         registerButton = (Button)findViewById(R.id.registerButton);
         loginLink = (TextView)findViewById(R.id.loginLink);
 
         registerButton.setOnClickListener(new View.OnClickListener() {
+
             @Override
-            public void onClick(View v) {
-
-                JSONObject ob = new JSONObject();
-                try {
-                    ob.put("username", username.getText().toString());
-                    ob.put("nameClient", name.getText().toString());
-                    ob.put("lastNameClient", lastName.getText().toString());
-                    ob.put("emailClient", email.getText().toString());
-                    ob.put("password", password.getText().toString());
-                } catch (JSONException e) {
-
-                    e.printStackTrace();
-
+            public void onClick(View view) {
+                if (!isOnline()) {
+                    showLoginError(getString(R.string.error_network));
+                    return;
                 }
 
-                JsonObjectRequest req = new JsonObjectRequest(Request.Method.POST, URL, ob,
-                        new Response.Listener<JSONObject>(){
+                registerUser();
 
-                            @Override
-                            public void onResponse(JSONObject s) {
-                                Log.d("SOMETAG", s.toString());
-                                Toast.makeText(Register.this, "Registration Successful", Toast.LENGTH_LONG).show();
-//                                if(s.equals("true"))
-//                                    Toast.makeText(Register.this, "Registration Successful", Toast.LENGTH_LONG).show();
-//                                else{
-//                                    Toast.makeText(Register.this, "Can't Register", Toast.LENGTH_LONG).show();
-//                                }
-                            }
-                        }, new Response.ErrorListener(){
-                            @Override
-                            public void onErrorResponse(VolleyError volleyError) {
-                                Log.d("SOMETAG", volleyError.toString());
-                                Toast.makeText(Register.this, "Some error occurred -> "+volleyError, Toast.LENGTH_LONG).show();;
-                            }
-                        }
-                );
-//                JsonObjectRequest request = new JsonObjectRequest(Request.Method.POST, URL, ob,
-//                        new Response.Listener<JsonObjectRequest>(){
-//                            @Override
-//                            public void onResponse(JsonObjectRequest s) {
-//                                Toast.makeText(Register.this, "Registration Successful", Toast.LENGTH_LONG).show();
-////                                if(s.equals("true"))
-////                                    Toast.makeText(Register.this, "Registration Successful", Toast.LENGTH_LONG).show();
-////                                else{
-////                                    Toast.makeText(Register.this, "Can't Register", Toast.LENGTH_LONG).show();
-////                                }
-//                            }
-//                        }, new Response.ErrorListener(){
-//                            @Override
-//                            public void onErrorResponse(VolleyError volleyError) {
-//                                Toast.makeText(Register.this, "Some error occurred -> "+volleyError, Toast.LENGTH_LONG).show();;
-//                            }
-//                        }) {
-//                    @Override
-//                    protected Map<String, String> getParams() throws AuthFailureError {
-//                        Map<String, String> parameters = new HashMap<String, String>();
-//                        parameters.put("username", username.getText().toString());
-//                        parameters.put("nameClient", name.getText().toString());
-//                        parameters.put("lastNameClient", lastName.getText().toString());
-//                        parameters.put("emailClient", email.getText().toString());
-//                        parameters.put("password", password.getText().toString());
-//                        return parameters;
-//                    }
-//                };
-
-                        RequestQueue rQueue = Volley.newRequestQueue(Register.this);
-                rQueue.add(req);
             }
+
         });
 
         loginLink.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivity(new Intent(Register.this, Login.class));
+
+                startActivity(new Intent(Register.this, PanicButton.class));
             }
         });
 
 
+
+    }
+    private void registerUser() {
+
+        String userId = username.getText().toString();
+        String nameUser = name.getText().toString();
+        String lastNameUser = lastName.getText().toString();
+        String emailUser = email.getText().toString();
+        String passwordUser = password.getText().toString();
+
+
+        Call<User> registerCall = myApi.register(new User(userId, nameUser,lastNameUser, emailUser, passwordUser));
+
+        registerCall.enqueue(new Callback<User>() {
+            @Override
+            public void onResponse(Call<User> call, Response<User> response) {
+
+            }
+
+            @Override
+            public void onFailure(Call<User> call, Throwable t) {
+                showLoginError(t.getMessage());
+            }
+        });
+
     }
 
+    private boolean isOnline() {
+        ConnectivityManager cm =
+                (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+
+        NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
+        return activeNetwork != null && activeNetwork.isConnected();
+    }
+
+    private void showLoginError(String error) {
+        Toast.makeText(this, error, Toast.LENGTH_LONG).show();
+    }
 }

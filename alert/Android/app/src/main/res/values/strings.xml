@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">PanicButton</string>
+    <string name="error_network">Conexión de red no disponible</string>
+    <string name="title_activity_newton_cradle">PanicButton</string>
 </resources>
