@@ -3,6 +3,7 @@ package button.panic.cl.panicbutton.model;
 import button.panic.cl.panicbutton.Register;
 import retrofit2.Call;
 import retrofit2.http.Body;
+import retrofit2.http.Headers;
 import retrofit2.http.POST;
 import retrofit2.http.Path;
 

@@ -5,6 +5,6 @@ import org.springframework.data.repository.CrudRepository;
 import cl.button.panic.model.ApplicationUser;
 
 public interface UserRepository extends CrudRepository<ApplicationUser, Long> {
-	ApplicationUser findByUsername(String username);
+	ApplicationUser findByEmailClient(String emailClient);
 
 }

@@ -12,11 +12,16 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 
+import java.io.IOException;
+
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import button.panic.cl.panicbutton.model.LoginBody;
 import button.panic.cl.panicbutton.model.MyApiEndpointInterface;
 import button.panic.cl.panicbutton.model.User;
+import okhttp3.Interceptor;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -73,8 +78,9 @@ public class PanicButton extends AppCompatActivity {
         progressDialog.setMessage("Autenticando...");
         progressDialog.show();
 
-        String email = _username.getText().toString();
+        String emailClient = _username.getText().toString();
         String password = _password.getText().toString();
+
 
         // Crear conexión al servicio REST
         mRestAdapter = new Retrofit.Builder()
@@ -83,14 +89,13 @@ public class PanicButton extends AppCompatActivity {
                 .build();
         myApi = mRestAdapter.create(MyApiEndpointInterface.class);
 
-        Call<User> registerCall = myApi.login(new LoginBody(email, password));
-
+        Call<User> registerCall = myApi.login(new LoginBody(emailClient, password));
         registerCall.enqueue(new Callback<User>() {
 
             @Override
             public void onResponse(Call<User> call, Response<User> response) {
                 Log.d("pasa aqui", "llega aqui");
-                response.message();
+                response.body();
             }
 
             @Override

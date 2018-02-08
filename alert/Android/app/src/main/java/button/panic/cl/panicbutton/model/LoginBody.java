@@ -7,21 +7,21 @@ import com.google.gson.annotations.SerializedName;
  */
 
 public class LoginBody {
-    @SerializedName("email")
-    private String email;
+    @SerializedName("emailClient")
+    private String emailClient;
     private String password;
 
-    public LoginBody(String email, String password) {
-        this.email = email;
+    public LoginBody(String emailClient, String password) {
+        this.emailClient = emailClient;
         this.password = password;
     }
 
-    public String getEmail() {
-        return email;
+    public String getEmailClient() {
+        return emailClient;
     }
 
-    public void setEmail(String email) {
-        this.email = email;
+    public void setEmailClient(String emailClient) {
+        this.emailClient = emailClient;
     }
 
     public String getPassword() {
