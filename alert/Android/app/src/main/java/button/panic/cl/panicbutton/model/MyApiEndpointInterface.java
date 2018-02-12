@@ -3,6 +3,7 @@ package button.panic.cl.panicbutton.model;
 import button.panic.cl.panicbutton.Register;
 import retrofit2.Call;
 import retrofit2.http.Body;
+import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.Headers;
 import retrofit2.http.POST;
 import retrofit2.http.Path;
@@ -17,8 +18,9 @@ public interface MyApiEndpointInterface {
     @POST("login/sign-up")
     Call<User> register(@Body User user);
 
+    @Headers("Content-Type:application/json")
     @POST("login")
-    Call<User> login(@Body LoginBody loginBody);
+    Call<Void> login(@Body LoginBody loginBody);
 
 
 }

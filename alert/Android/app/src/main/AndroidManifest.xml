@@ -23,7 +23,12 @@
 
         <activity
             android:name=".Register"
-            android:label="@string/title_activity_newton_cradle"></activity>
+            android:label="@string/title_activity_newton_cradle"
+            android:theme="@style/AppTheme.Dark"></activity>
+        <activity
+            android:name=".Home"
+            android:label="@string/title_activity_newton_cradle"
+            android:theme="@style/AppTheme.Dark"></activity>
     </application>
 
 </manifest>

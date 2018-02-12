@@ -18,7 +18,6 @@ import butterknife.ButterKnife;
 import butterknife.InjectView;
 import button.panic.cl.panicbutton.model.LoginBody;
 import button.panic.cl.panicbutton.model.MyApiEndpointInterface;
-import button.panic.cl.panicbutton.model.User;
 import okhttp3.Interceptor;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
@@ -36,6 +35,8 @@ public class PanicButton extends AppCompatActivity {
     private static final String TAG = "LoginActivity";
     private MyApiEndpointInterface myApi;
     private Retrofit mRestAdapter;
+    private static final int REQUEST_SIGNUP = 0;
+    int loginIsOk;
 
 
     @Override
@@ -49,7 +50,6 @@ public class PanicButton extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 login();
-
             }
         });
 
@@ -81,26 +81,39 @@ public class PanicButton extends AppCompatActivity {
         String emailClient = _username.getText().toString();
         String password = _password.getText().toString();
 
+        OkHttpClient.Builder okHttpBuilder = new OkHttpClient.Builder();
 
+        OkHttpClient.Builder builder = okHttpBuilder.addInterceptor(new Interceptor() {
+            @Override
+            public okhttp3.Response intercept(Chain chain) throws IOException {
+                Request request = chain.request();
+                okhttp3.Response response = chain.proceed(request);
+                if(response.header("Authorization") != null) {
+                    String tokenId = response.header("Authorization");
+                    String[] bearerId = tokenId.split(" ");
+                }
+                return response;
+            }
+        });
         // Crear conexión al servicio REST
         mRestAdapter = new Retrofit.Builder()
                 .baseUrl(MyApiEndpointInterface.BASE_URL)
                 .addConverterFactory(GsonConverterFactory.create())
+                .client(okHttpBuilder.build())
                 .build();
         myApi = mRestAdapter.create(MyApiEndpointInterface.class);
 
-        Call<User> registerCall = myApi.login(new LoginBody(emailClient, password));
-        registerCall.enqueue(new Callback<User>() {
+        Call<Void> registerCall = myApi.login(new LoginBody(emailClient, password));
+        registerCall.enqueue(new Callback<Void>() {
 
             @Override
-            public void onResponse(Call<User> call, Response<User> response) {
-                Log.d("pasa aqui", "llega aqui");
-                response.body();
+            public void onResponse(Call<Void> call, Response<Void> response) {
+                    loginIsOk = response.code();
             }
 
             @Override
-            public void onFailure(Call<User> call, Throwable t) {
-
+            public void onFailure(Call<Void> call, Throwable t) {
+                t.getStackTrace();
             }
         });
 
@@ -108,13 +121,26 @@ public class PanicButton extends AppCompatActivity {
         new android.os.Handler().postDelayed(
                 new Runnable() {
                     public void run() {
-                        // On complete call either onLoginSuccess or onLoginFailed
-                        onLoginSuccess();
-                        // onLoginFailed();
+                        if(loginIsOk != 200){
+                            onLoginFailed();
+                        } else {
+                            onLoginSuccess();
+                            startActivity(new Intent(PanicButton.this, Home.class));
+                        }
                         progressDialog.dismiss();
                     }
                 }, 3000);
     }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == REQUEST_SIGNUP) {
+            if (resultCode == RESULT_OK) {
+                this.finish();
+            }
+        }
+    }
+
 
     @Override
     public void onBackPressed() {
@@ -128,7 +154,7 @@ public class PanicButton extends AppCompatActivity {
     }
 
     public void onLoginFailed() {
-        Toast.makeText(getBaseContext(), "Login failed", Toast.LENGTH_LONG).show();
+        Toast.makeText(getBaseContext(), "Autenticación fallida", Toast.LENGTH_LONG).show();
 
         _loginButton.setEnabled(true);
     }
